@@ -3,7 +3,6 @@ import './App.css';
 import { Card, CardHeader, CardBody, CardFooter, Button } from 'reactstrap';
 import sampleData from './sampleData';
 import StockList from './StockList';
-// import fetch from "node-fetch";
 
 function App() {
   const AWS_API_GATEWAY = 'https://l30wyokbr6.execute-api.us-east-1.amazonaws.com/prod';
@@ -31,6 +30,25 @@ function App() {
       })
       .then(function(response) {
         console.log(response);
+        let stockList = response.Items.map(item => {
+          item.name =  
+          item.ticker
+          item.purchasePrice
+          item.shares
+        // Write the code to transform the shape of item from lambdaResponse.Items
+        // into the shape that the StockListItem component expects:
+        //
+        // Be sure to return the transformed object!!
+        });
+      
+        // When the above code finishes, stockList should be an array of objects that
+        // the StockListItem component will be able to render on the web page!
+        // We still need to retrieve the real-time stock price, but we'll do that in a 
+        // later step and we'll do it in the AWS Lambda function
+        
+        // After we've generated the stockList items we need to set the stockList state
+        // variable so the StockListItem component can render the data
+        setStocks(stockList);
       })
       .catch(function(error) {
         console.log(error);

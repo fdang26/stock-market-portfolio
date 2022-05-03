@@ -3,7 +3,7 @@ import './App.css';
 import { Card, CardHeader, CardBody, CardFooter, Button } from 'reactstrap';
 import sampleData from './sampleData';
 import StockList from './StockList';
-import fetch from "node-fetch";
+// import fetch from "node-fetch";
 
 function App() {
   const AWS_API_GATEWAY = 'https://l30wyokbr6.execute-api.us-east-1.amazonaws.com/prod';

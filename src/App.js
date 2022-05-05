@@ -29,26 +29,17 @@ function App() {
         return response.json();
       })
       .then(function(response) {
-        console.log(response);
+        console.log(response + "Here before the map");
         let stockList = response.Items.map(item => {
-          item.name =  
-          item.ticker
-          item.purchasePrice
-          item.shares
-        // Write the code to transform the shape of item from lambdaResponse.Items
-        // into the shape that the StockListItem component expects:
-        //
-        // Be sure to return the transformed object!!
+          item.name = item.name.S;
+          item.purchasePrice = item.purchasePrice.N;
+          item.shares = item.shares.N;
+          item.ticker = item.ticker.S;
+          console.log("Here before the return of the transformed item")
+          return(item);
         });
-      
-        // When the above code finishes, stockList should be an array of objects that
-        // the StockListItem component will be able to render on the web page!
-        // We still need to retrieve the real-time stock price, but we'll do that in a 
-        // later step and we'll do it in the AWS Lambda function
-        
-        // After we've generated the stockList items we need to set the stockList state
-        // variable so the StockListItem component can render the data
         setStocks(stockList);
+        console.log(stockList);
       })
       .catch(function(error) {
         console.log(error);

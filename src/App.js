@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import { Card, CardHeader, CardBody, CardFooter, Button } from 'reactstrap';
-import sampleData from './sampleData';
 import StockList from './StockList';
 
 function App() {
@@ -29,13 +28,12 @@ function App() {
         return response.json();
       })
       .then(function(response) {
-        console.log(response + "Here before the map");
+        console.log(response);
         let stockList = response.Items.map(item => {
           item.name = item.name.S;
           item.purchasePrice = item.purchasePrice.N;
           item.shares = item.shares.N;
           item.ticker = item.ticker.S;
-          console.log("Here before the return of the transformed item")
           return(item);
         });
         setStocks(stockList);

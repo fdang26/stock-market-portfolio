@@ -36,7 +36,6 @@ function App() {
       .then(function(response) {
         console.log(response);
         let stockList = response.Items.map(item => {
-          item.name = item.name.S;
           item.purchasePrice = item.purchasePrice.N;
           item.shares = item.shares.N;
           item.ticker = item.ticker.S;

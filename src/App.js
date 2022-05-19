@@ -12,6 +12,9 @@ function App() {
   
   const [stocks, setStocks] = useState([]);
   const [stockList, setStockList] = useState([]);
+  const [stockPrices, setStockPrices] = useState({});
+  const [tickerList, setTickerList] = useState([]);
+  const [portfolioData, setPortfolioData] = useState([]);
   
   // Retrieve the current stock information when the page first loads
   useEffect(() => {

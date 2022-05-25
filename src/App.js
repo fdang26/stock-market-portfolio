@@ -23,6 +23,7 @@ function App() {
       cache: 'default'
     };
     
+<<<<<<< HEAD
     getPortfolio(AWS_API_GATEWAY_GET_PORTFOLIO, options);
   }, []);
   
@@ -53,6 +54,31 @@ function App() {
   };
   
   
+  //the fetch function; retreives portfolio data
+  function getPortfolio(param1, param2){
+    fetch(param1, param2)
+        .then(function(response) {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(function(response) {
+          console.log(response);
+          let stockList = response.Items.map(item => {
+            item.name = item.name.S;
+            item.purchasePrice = item.purchasePrice.N;
+            item.shares = item.shares.N;
+            item.ticker = item.ticker.S;
+            return(item);
+          });
+          setStocks(stockList);
+          console.log(stockList);
+        })
+        .catch(function(error) {
+          console.log(error);
+        })
+  };
   // With the stock data add purchase value, current price
   // and current value to the stock record
   useEffect(() => {

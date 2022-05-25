@@ -22,39 +22,12 @@ function App() {
       method: 'POST',
       cache: 'default'
     };
-    
-<<<<<<< HEAD
+
     getPortfolio(AWS_API_GATEWAY_GET_PORTFOLIO, options);
   }, []);
   
   
-  
-  function getPortfolio(action, other) {
-     fetch(action, other)
-      .then(function(response) {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(function(response) {
-        console.log(response);
-        let stockList = response.Items.map(item => {
-          item.purchasePrice = item.purchasePrice.N;
-          item.shares = item.shares.N;
-          item.ticker = item.ticker.S;
-          return(item);
-        });
-        setStocks(stockList);
-        console.log(stockList);
-      })
-      .catch(function(error) {
-        console.log(error);
-      })
-  };
-  
-  
-  //the fetch function; retreives portfolio data
+  // the fetch function; retreives portfolio data
   function getPortfolio(param1, param2){
     fetch(param1, param2)
         .then(function(response) {

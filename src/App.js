@@ -15,16 +15,18 @@ function App() {
   const [stockPrices, setStockPrices] = useState({});
   const [tickerList, setTickerList] = useState([]);
   const [portfolioData, setPortfolioData] = useState([]);
-  const options = {
+  
+  
+  
+  
+  // Retrieve the current stock information when the page first loads
+  useEffect(() => {
+    const options = {
       method: 'POST',
       cache: 'default'
     };
-  // Retrieve the current stock information when the page first loads
-  useEffect(() => {
     getPortfolio(AWS_API_GATEWAY_GET_PORTFOLIO, options);
   }, []);
-  
-  
   // the fetch function; retreives portfolio data
   function getPortfolio(param1, param2){
     fetch(param1, param2)
@@ -50,6 +52,9 @@ function App() {
           console.log(error);
         })
   };
+  
+  
+  
   // With the stock data add purchase value, current price
   // and current value to the stock record
   useEffect(() => {
@@ -64,23 +69,52 @@ function App() {
   }, [stocks])
   
   
-  //event handler than logs a message to the console when the add stock button is pushed
+  
+  //event handler than logs a message to the console 
+  //when the add stock button is pushed
   const addStock = evt => {
     console.log('add stock clicked');
+    getStockPrice("GOOG")
   }
 
-  //triggers when stockList is updated; it takes the stockList and makes a list of the tickers
+
+
+  //triggers when stockList is updated; calls getTickerList
   useEffect(() => {
-    setTickerList(getTickerList(stockList));
-  },[stockList])
+    setTickerList(createTickerList(stocks));
+  },[stocks])
   //retrieves the the tickers from stockList as an array 
-  function getTickerList(stocks){
+  function createTickerList(stocks){
     let tickers = stocks.reduce(function (arr, current) {
       arr.push(current.ticker);
       return arr;
     },[]);
     return tickers;
   }
+  
+  
+  //retrieves the stock price using corresponding its ticker symbol
+  function getStockPrice(ticker){
+    const fetchOptions = {
+      method: 'POST',
+      cache: 'default',
+      body: JSON.stringify({ticker: ticker})
+    };
+    fetch(AWS_API_GATEWAY_GET_PORTFOLIO, fetchOptions)
+      .then(function(response){
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+        console.log(response)
+        return response;
+      })
+      .catch(function(error){
+        console.log(error)
+      })
+  }
+  
+  
+  
   
   return (
     <div className="App">

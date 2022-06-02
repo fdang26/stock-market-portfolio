@@ -37,7 +37,6 @@ function App() {
           return response.json();
         })
         .then(function(response) {
-          console.log(response);
           let stockList = response.Items.map(item => {
             item.name = item.name.S;
             item.purchasePrice = item.purchasePrice.N;
@@ -46,7 +45,6 @@ function App() {
             return(item);
           });
           setStocks(stockList);
-          console.log(stockList);
         })
         .catch(function(error) {
           console.log(error);
@@ -58,15 +56,13 @@ function App() {
   // With the stock data add purchase value, current price
   // and current value to the stock record
   useEffect(() => {
-    const enhancedStocks = stocks.map(stock => {
-      stock.purchaseValue = stock.shares * stock.purchasePrice;
-      stock.currentPrice = Math.random()*200 + 50;
-      stock.currentValue = stock.shares * stock.currentPrice;
-      stock.profit = stock.currentValue - stock.purchaseValue;
-      return stock;
-    })
-    setStockList(enhancedStocks);
-  }, [stocks])
+    let promises = tickerList.map(ticker => getStockPrice(ticker));
+    Promise.all(promises)
+      .then(stocks => {
+        console.log(stocks);
+      })
+  }, [tickerList])
+
   
   
   
@@ -101,11 +97,9 @@ function App() {
       body: JSON.stringify({ticker: ticker})
     };
     fetch(AWS_API_GATEWAY_GET_PORTFOLIO, fetchOptions)
-      .then(function(response){
+      .then(function(response) {
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-        console.log(response)
+            throw new Error(`HTTP error! status: ${response.status}`)};
         return response;
       })
       .catch(function(error){

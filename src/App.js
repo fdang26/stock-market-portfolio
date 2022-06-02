@@ -15,14 +15,12 @@ function App() {
   const [stockPrices, setStockPrices] = useState({});
   const [tickerList, setTickerList] = useState([]);
   const [portfolioData, setPortfolioData] = useState([]);
-  
-  // Retrieve the current stock information when the page first loads
-  useEffect(() => {
-    const options = {
+  const options = {
       method: 'POST',
       cache: 'default'
     };
-
+  // Retrieve the current stock information when the page first loads
+  useEffect(() => {
     getPortfolio(AWS_API_GATEWAY_GET_PORTFOLIO, options);
   }, []);
   
@@ -65,10 +63,25 @@ function App() {
     setStockList(enhancedStocks);
   }, [stocks])
   
+  
+  //event handler than logs a message to the console when the add stock button is pushed
   const addStock = evt => {
     console.log('add stock clicked');
   }
 
+  //triggers when stockList is updated; it takes the stockList and makes a list of the tickers
+  useEffect(() => {
+    setTickerList(getTickerList(stockList));
+  },[stockList])
+  //retrieves the the tickers from stockList as an array 
+  function getTickerList(stocks){
+    let tickers = stocks.reduce(function (arr, current) {
+      arr.push(current.ticker);
+      return arr;
+    },[]);
+    return tickers;
+  }
+  
   return (
     <div className="App">
       <Card>

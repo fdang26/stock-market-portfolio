@@ -6,6 +6,7 @@ import StockList from './StockList';
 function App() {
   const AWS_API_GATEWAY = 'https://l30wyokbr6.execute-api.us-east-1.amazonaws.com/prod';
   const AWS_API_GATEWAY_GET_PORTFOLIO = AWS_API_GATEWAY + '/get-portfolio';
+  const AWS_API_GATEWAY_GET_STOCK_PRICE = AWS_API_GATEWAY + '/get-stock-price';
   // Uncomment setMyName if required, for example, if the name
   // is stored in the DynamoDB
   const [myName/*, setMyName*/] = useState('Roger');
@@ -53,15 +54,25 @@ function App() {
   
   
   
-  // With the stock data add purchase value, current price
-  // and current value to the stock record
-  useEffect(() => {
-    let promises = tickerList.map(ticker => getStockPrice(ticker));
-    Promise.all(promises)
-      .then(stocks => {
-        console.log(stocks);
-      })
-  }, [tickerList])
+  //adds the simulated real-time stock information
+    useEffect(() => {
+      let promises = tickerList.map(ticker => getStockPrice(ticker));
+      Promise.all(promises)
+        .then(function(stocks){
+          console.log(stocks);
+          const stockPrices = stocks.reduce((obj, stock) => {
+            const info = {
+              name: stock.data ? stock.data.longName : null,
+              price: stock.data ? stock.data.regularMarketPrice : null
+            }
+            obj[stock.ticker] = info;
+            return obj;
+          }, {});
+      setStockPrices(stockPrices);
+      console.log(stockPrices);
+
+        });
+    }, [tickerList])
 
   
   
@@ -70,18 +81,18 @@ function App() {
   //when the add stock button is pushed
   const addStock = evt => {
     console.log('add stock clicked');
-    getStockPrice("GOOG")
-  }
+    getStockPrice("GOOG");
+  };
 
 
 
-  //triggers when stockList is updated; calls getTickerList
+  //triggers when stocks is updated; calls createTickerList
   useEffect(() => {
     setTickerList(createTickerList(stocks));
-  },[stocks])
+  },[stocks]);
   //retrieves the the tickers from stockList as an array 
-  function createTickerList(stocks){
-    let tickers = stocks.reduce(function (arr, current) {
+  function createTickerList(stockInput){
+    let tickers = stockInput.reduce(function (arr, current) {
       arr.push(current.ticker);
       return arr;
     },[]);
@@ -91,20 +102,31 @@ function App() {
   
   //retrieves the stock price using corresponding its ticker symbol
   function getStockPrice(ticker){
-    const fetchOptions = {
-      method: 'POST',
-      cache: 'default',
-      body: JSON.stringify({ticker: ticker})
-    };
-    fetch(AWS_API_GATEWAY_GET_PORTFOLIO, fetchOptions)
-      .then(function(response) {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)};
-        return response;
-      })
-      .catch(function(error){
-        console.log(error)
-      })
+    return new Promise((resolve,reject)=>{
+      const fetchOptions = {
+        method: 'POST',
+        cache: 'default',
+        body: JSON.stringify({ticker: ticker})
+      };
+      
+      fetch(AWS_API_GATEWAY_GET_STOCK_PRICE, fetchOptions)
+        .then(function(response) {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(function(response) {
+          let ticker = response.ticker;
+          let data = response.data;
+          let value = {data, ticker};
+          // console.log(response);
+          resolve(value);
+        })
+        .catch(function(error){
+          reject(error);
+        });
+    });
   }
   
   

@@ -4,4 +4,4 @@ const utilities = {
   formatNumber: m => numeral(m).format('0,0.00')
 }
 
-export default utilities;
+export default utilities
